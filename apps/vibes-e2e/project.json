@@ -1,0 +1,9 @@
+{
+  "name": "vibes-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/vibes-e2e/src",
+  "implicitDependencies": ["vibes"],
+  "// targets": "to see all targets run: nx show project vibes-e2e --web",
+  "targets": {}
+}
