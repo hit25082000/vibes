@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
+  selector: 'v-auth',
   imports: [RouterModule],
-  selector: 'v-root',
-  template: '<router-outlet/>',
+  templateUrl: './auth.layout.html',
+  styleUrl: './auth.layout.scss',
 })
-export class AppComponent {
-  title = 'vibes';
-}
+export class AuthLayout {}
