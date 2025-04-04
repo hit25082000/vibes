@@ -1,7 +1,7 @@
-import nx from '@nx/eslint-plugin';
-import baseConfig from '../../eslint.config.mjs';
+const nx = require('@nx/eslint-plugin');
+const baseConfig = require('../../eslint.config.cjs');
 
-export default [
+module.exports = [
   ...baseConfig,
   ...nx.configs['flat/angular'],
   ...nx.configs['flat/angular-template'],
@@ -9,10 +9,10 @@ export default [
     files: ['**/*.ts'],
     rules: {
       '@angular-eslint/directive-selector': [
-        'error',
+        'warn',
         {
           type: 'attribute',
-          prefix: 'v',
+          prefix: 'mb',
           style: 'camelCase',
         },
       ],
@@ -20,11 +20,11 @@ export default [
         'error',
         {
           type: 'element',
-          prefix: 'v',
+          prefix: 'mb',
           style: 'kebab-case',
         },
       ],
-      '@angular-eslint/component-class-sufix': [
+      '@angular-eslint/component-class-suffix': [
         'error',
         {
           suffixes: ['Component', 'Page', 'Dialog', 'Layout'],
@@ -35,6 +35,8 @@ export default [
   {
     files: ['**/*.html'],
     // Override or add rules here
-    rules: {},
+    rules: {
+      '@angular-eslint/template/label-has-associated-control': 'off',
+    },
   },
 ];
