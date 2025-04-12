@@ -27,7 +27,7 @@ export default [
       '@angular-eslint/component-class-suffix': [
         'error',
         {
-          suffixes: ['Component', 'Page', 'Dialog', 'Layout'],
+          suffixes: ['Component', 'Page', 'Dialog', 'Layout', 'Widget'],
         },
       ],
     },

@@ -1,5 +1,5 @@
 {
-  "endOfLine": "lf",
+  "endOfLine": "crlf",
   "singleQuote": true,
   "printWidth": 180,
   "arrowParens": "avoid",
@@ -10,5 +10,11 @@
         "parser": "html"
       }
     }
-  ]
+  ],
+  "prettier/prettier": [
+  "error",
+  {
+    "endOfLine": "auto"
+  }
+]
 }
