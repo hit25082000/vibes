@@ -13,6 +13,7 @@
       "@domain/*": ["apps/vibes/src/app/domain/*"],
       "@core/*": ["apps/vibes/src/app/core/*"],
       "@widget/*": ["apps/vibes/src/app/widget/*"],
+      "@env/*": ["apps/vibes/src/environments/*"]
     }
   },
   "files": [],

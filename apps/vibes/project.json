@@ -8,12 +8,16 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/vibes",
         "index": "apps/vibes/src/index.html",
         "browser": "apps/vibes/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/vibes/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -22,7 +26,24 @@
             "input": "apps/vibes/public"
           }
         ],
-        "styles": ["apps/vibes/src/styles.scss"],
+        "styles": [
+          "apps/vibes/src/styles.scss",
+          {
+            "input": "apps/vibes/src/styles/default.less",
+            "bundleName": "default",
+            "inject": false
+          },
+          {
+            "input": "apps/vibes/src/styles/dark.less",
+            "bundleName": "dark",
+            "inject": false
+          }
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "apps/vibes/src/styles"
+          ]
+        },
         "scripts": []
       },
       "configurations": {
@@ -44,13 +65,22 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/vibes/src/environments/environment.ts",
+              "with": "apps/vibes/src/environments/environment.development.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "production"
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "port": 4244
+      },
       "configurations": {
         "production": {
           "buildTarget": "vibes:build:production"
@@ -72,7 +102,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/vibes/jest.config.ts"
       }

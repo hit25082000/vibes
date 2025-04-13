@@ -1,5 +1,4 @@
 {
-  "endOfLine": "crlf",
   "singleQuote": true,
   "printWidth": 180,
   "arrowParens": "avoid",
@@ -11,10 +10,5 @@
       }
     }
   ],
-  "prettier/prettier": [
-  "error",
-  {
-    "endOfLine": "auto"
-  }
-]
+  "endOfLine": "auto"
 }
