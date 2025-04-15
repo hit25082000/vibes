@@ -13,7 +13,7 @@ export default [
         {
           type: 'attribute',
           prefix: 'v',
-          style: 'camelCase',
+          style: 'kebab-case',
         },
       ],
       '@angular-eslint/component-selector': [

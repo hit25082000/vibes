@@ -1,7 +1,8 @@
-import { inject, Injectable, signal, Signal } from '@angular/core';
-import { iUser } from '../interfaces/user.interface';
-import { InjectSupabase } from '@shared/functions/inject-supabase.function';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { InjectSupabase } from '@shared/functions/inject-supabase.function';
+
+import { iUser } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,6 @@ export class AuthService {
   async load() {
     const { data } = await this.supabase.auth.getSession();
     if (!data.session) {
-      await this.purgeAndRedirect();
       return;
     }
 
@@ -27,5 +27,17 @@ export class AuthService {
   async purgeAndRedirect() {
     await this.supabase.auth.signOut();
     this.router.navigate(['/auth']);
+  }
+
+  async updateUser(data: Partial<iUser>, id?: string) {
+    const { data: user, error } = await this.supabase
+      .from('users')
+      .update(data)
+      .match({ id: id || this.currentUser()?.id })
+      .select('*')
+      .maybeSingle();
+
+    if (error) throw error;
+    this.currentUser.set(user as iUser);
   }
 }

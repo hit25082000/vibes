@@ -11,6 +11,7 @@ import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { ThemeService } from '@shared/services/theme/theme.service';
 import { AuthService } from '@domain/auth/services/auth.service';
+import { provideEnvironmentNgxMask } from 'ngx-mask';
 
 registerLocaleData(pt);
 
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
     provideHttpClient(),
+    provideEnvironmentNgxMask(),
     provideAppInitializer(() => inject(ThemeService).loadTheme()),
     provideAppInitializer(() => inject(AuthService).load()),
   ],

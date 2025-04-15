@@ -1,18 +1,3 @@
-<form nz-form nzLayout="vertical" [formGroup]="loginForm">
-  <nz-form-item>
-    <nz-form-label nzFor="email">E-mail</nz-form-label>
-    <nz-form-control>
-      <input nz-input type="email" formControlName="email" />
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="password">Password</nz-form-label>
-    <nz-form-control>
-      <input nz-input type="password" formControlName="password" />
-    </nz-form-control>
-    <a routerLink="/auth/forgot-password">Esqueci minha senha</a>
-  </nz-form-item>
-</form>
+<v-dynamic-form [config]="loginConfig" />
 
-<button nz-button nzBlock nzType="text" (click)="toggleTheme()">Toggle theme</button>
-<button nz-button nzBlock nzType="primary" (click)="login()">Login</button>
+<button nz-button nzBlock nzType="primary" (click)="login()" [disabled]="dynamicForm?.form?.invalid">Login</button>
