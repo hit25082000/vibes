@@ -16,8 +16,8 @@ export const SUBSCRIPTION_ROUTES: Route[] = [
         loadComponent: () => import('./components/admin-details/admin-details.component').then(m => m.AdminDetailsComponent),
       },
       {
-        path: 'company',
-        loadComponent: () => import('./components/company-details/company-details.component').then(m => m.CompanyDetailsComponent),
+        path: 'establishment',
+        loadComponent: () => import('./components/establishment-details/establishment-details.component').then(m => m.EstablishmentDetailsComponent),
       },
       {
         path: 'select-plan',

@@ -6,7 +6,7 @@ import { iDynamicFormConfig } from '@widget/components/dynamic-form/dynamic-form
 
 import { UF_LIST } from './ufs.constant';
 
-export const COMPANY_FORM_CONFIG = (): iDynamicFormConfig[] => {
+export const Establishment_FORM_CONFIG = (): iDynamicFormConfig[] => {
   const enableFields = (form: FormGroup, fields: string[]) => {
     fields.forEach(field => {
       form.get(field)?.enable();

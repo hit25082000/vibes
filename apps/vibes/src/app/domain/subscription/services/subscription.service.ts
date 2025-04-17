@@ -5,11 +5,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@domain/auth/services/auth.service';
 
-import { UserCompanyApi } from '../apis/user-company.api';
 import { eSubscriptionStep } from '../enums/subscription-step.enum';
 import { InjectSupabase } from '@shared/functions/inject-supabase.function';
-import { iCompany } from '@shared/interfaces/company.interface';
 import { eUserStatus } from '@domain/auth/enums/user-status.enum';
+import { UserEstablishmentApi } from '../apis/user-establishment.api';
+import { iEstablishment } from '@shared/interfaces/establishment.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class SubscriptionService {
   private authService = inject(AuthService);
   private supabase = InjectSupabase();
   private messageService = inject(NzMessageService);
-  private userCompanyApi = inject(UserCompanyApi);
+  private userEstablishmentApi = inject(UserEstablishmentApi);
   private router = inject(Router);
 
   currentStep = signal<eSubscriptionStep>(eSubscriptionStep.ADMIN);
@@ -30,7 +30,7 @@ export class SubscriptionService {
       phone: new FormControl<string | null>(null),
       password: new FormControl<string | null>(null),
     }),
-    company: new FormGroup({
+    establishment: new FormGroup({
       name: new FormControl<string | null>(null),
       cnpj: new FormControl<string | null>(null),
       zip_code: new FormControl<string | null>(null),
@@ -51,8 +51,8 @@ export class SubscriptionService {
     return this.form.get('admin') as FormGroup;
   }
 
-  getCompanyForm() {
-    return this.form.get('company') as FormGroup;
+  getEstablishmentForm() {
+    return this.form.get('establishment') as FormGroup;
   }
 
   getPlanForm() {
@@ -61,15 +61,19 @@ export class SubscriptionService {
 
   async submit() {
     try {
+      const { price_id } = this.getPlanForm().getRawValue();
+      if (!price_id) throw new Error('O plano é obrigatório.');
+
       await this.createAdminUser(this.getAdminForm());
-      const company = await this.createCompany(this.getCompanyForm());
-      await this.createSubscription(company.id);
+      const establishment = await this.createEstablishment(this.getEstablishmentForm());
+
+      await this.createSubscription(establishment.id, price_id);
 
       this.router.navigate(['/']);
       this.form.reset();
     } catch (error: unknown) {
       if (error instanceof Error) this.messageService.error(error.message);
-      else this.messageService.error('Erro ao criar assinatura');
+      else this.messageService.error('Erro ao criar assinatura' + error);
     }
   }
 
@@ -88,8 +92,11 @@ export class SubscriptionService {
     };
 
     const { data, error: signUpError } = await this.supabase.auth.signUp(payload);
-    if (signUpError || !data.user) throw new Error(signUpError?.message === 'User already registered' ? 'Usuário já cadastrado' : 'Erro ao cadastrar usuário');
+    await this.authService.login(password, email);
 
+    if (signUpError || !data.user) {
+      throw new Error(signUpError?.message === 'User already registered' ? 'Usuário já cadastrado' : 'Erro ao cadastrar usuário');
+    }
     const newUser = data.user;
     await this.authService.updateUser({ phone, status: eUserStatus.ACTIVE }, newUser.id);
     await this.authService.load();
@@ -97,8 +104,8 @@ export class SubscriptionService {
     return newUser;
   }
 
-  private async createCompany(companyForm: FormGroup) {
-    const formValues = companyForm.getRawValue();
+  private async createEstablishment(establishmentForm: FormGroup) {
+    const formValues = establishmentForm.getRawValue();
     const { name, cnpj, zip_code, street, number, complement, neighborhood, city, state, country } = formValues;
 
     const payload = {
@@ -116,33 +123,31 @@ export class SubscriptionService {
       },
     };
 
-    const { data, error } = await this.supabase.from('company').insert(payload).select('*').returns<iCompany>().single();
+    const { data, error } = await this.supabase.from('establishments').insert(payload).select('*').returns<iEstablishment>().single();
     if (error) throw new Error('Erro ao cadastrar empresa');
-    const company = data as iCompany;
+    const establishment = data as iEstablishment;
 
     const user_id = this.authService.currentUser()?.id;
     if (!user_id) throw new Error('Usuário não encontrado');
 
-    const userCompanyPayload = {
-      company_id: company.id,
+    const userEstablishmentPayload = {
+      establishment_id: establishment.id,
       user_id,
     };
 
-    const { error: userCompanyError } = await this.userCompanyApi.insert(userCompanyPayload);
-    if (userCompanyError) throw new Error('Erro ao vincular usuário a empresa');
+    console.log(userEstablishmentPayload);
+    const { error: userEstablishmentError } = await this.userEstablishmentApi.insert(userEstablishmentPayload);
+    if (userEstablishmentError) throw new Error('Erro ao vincular usuário a empresa' + userEstablishmentError);
 
-    return company;
+    return establishment;
   }
 
-  private async createSubscription(company_id: string) {
-    const { price_id } = this.getPlanForm().getRawValue();
-    if (!price_id) throw new Error('O plano é obrigatório.');
-
+  private async createSubscription(establishment_id: string, price_id: string) {
     const user = this.authService.currentUser();
     if (!user) throw new Error('Usuário não encontrado');
 
     const payload = {
-      company_id,
+      establishment_id,
       price_id,
       name: user.fullname,
       email: user.email,

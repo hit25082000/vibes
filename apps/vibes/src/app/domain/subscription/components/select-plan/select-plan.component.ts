@@ -27,6 +27,7 @@ interface iProductWithPrice extends iProduct {
   imports: [CurrencyPipe, FormsModule, NzButtonModule, NzCardModule, NzFlexModule, NzIconModule, NzRadioModule, NzSpinModule, NzTagModule, NzTypographyModule, RouterModule],
   templateUrl: './select-plan.component.html',
   styleUrl: './select-plan.component.scss',
+  providers: [LoadingService],
 })
 export class SelectPlanComponent implements OnInit, AfterViewInit {
   private productsApi = inject(ProductsApi);
@@ -47,6 +48,8 @@ export class SelectPlanComponent implements OnInit, AfterViewInit {
     const price_id = planForm.get('price_id')?.value;
 
     if (price_id) this.selectedPrice = price_id;
+
+    console.log(price_id);
   }
 
   async load() {

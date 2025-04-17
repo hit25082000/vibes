@@ -24,6 +24,14 @@ export class AuthService {
     this.isLoggedIn.set(true);
   }
 
+  async login(password: string, email: string) {
+    const { error } = await this.supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      return;
+    }
+  }
+
   async purgeAndRedirect() {
     await this.supabase.auth.signOut();
     this.router.navigate(['/auth']);

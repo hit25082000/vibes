@@ -1,6 +1,6 @@
 import { iBase } from './base.interface';
 
-export interface iCompany extends iBase {
+export interface iEstablishment extends iBase {
   name: string | null;
   cnpj: string | null;
   address: iAddress | null;

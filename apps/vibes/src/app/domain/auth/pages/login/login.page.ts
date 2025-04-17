@@ -5,7 +5,6 @@ import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { InjectSupabase } from '@shared/functions/inject-supabase.function';
-import { RouterLink } from '@angular/router';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { iDynamicFormConfig } from '@widget/components/dynamic-form/dynamic-form-config.interface';
 import { eDynamicField } from '@widget/components/dynamic-form/dynamic-field.enum';
@@ -13,7 +12,7 @@ import { DynamicFormComponent } from '@widget/components/dynamic-form/dynamic-fo
 
 @Component({
   selector: 'v-login',
-  imports: [NzButtonComponent, NzFormModule, NzInputModule, ReactiveFormsModule, RouterLink, DynamicFormComponent],
+  imports: [NzButtonComponent, NzFormModule, NzInputModule, ReactiveFormsModule, DynamicFormComponent],
   templateUrl: './login.page.html',
   styleUrl: './login.page.scss',
 })
