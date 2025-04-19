@@ -1,7 +1,7 @@
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { inject, Injectable, signal } from '@angular/core';
-import { Form, FormControl, FormGroup } from '@angular/forms';
+import { inject, Injectable } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@domain/auth/services/auth.service';
 
@@ -9,9 +9,6 @@ import { InjectSupabase } from '@shared/functions/inject-supabase.function';
 import { eUserStatus } from '@domain/auth/enums/user-status.enum';
 import { UserEstablishmentApi } from '../apis/user-establishment.api';
 import { iEstablishment } from '@shared/interfaces/establishment.interface';
-import { IUserRegistration } from '../interfaces/user-registration.interface';
-import { IEstablishmentWithPlan } from '../interfaces/establishment-with-plan.interface';
-import { eSubscriptionStep } from '../enums/subscription-step.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -48,12 +45,6 @@ export class SubscriptionService {
   });
 
   esteblishmentForm = new FormGroup({
-    admin: new FormGroup({
-      name: new FormControl<string | null>(null),
-      email: new FormControl<string | null>(null),
-      phone: new FormControl<string | null>(null),
-      password: new FormControl<string | null>(null),
-    }),
     establishment: new FormGroup({
       name: new FormControl<string | null>(null),
       cnpj: new FormControl<string | null>(null),
@@ -72,11 +63,7 @@ export class SubscriptionService {
   });
 
   getAdminForm() {
-    let form = this.form.get('admin') as FormGroup;
-
-    if (form == null) {
-      form = this.esteblishmentForm.get('admin') as FormGroup;
-    }
+    const form = this.form.get('admin') as FormGroup;
 
     return form;
   }

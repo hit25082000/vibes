@@ -1,9 +1,8 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzStepsModule } from 'ng-zorro-antd/steps';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FormStorageDirective } from '@widget/directives/form-storage/form-storage.directive';
 import { EstablishmentDetailsComponent } from '../../components/establishment-details/establishment-details.component';
 import { SelectPlanComponent } from '../../components/select-plan/select-plan.component';
@@ -13,7 +12,7 @@ import { SubscriptionService } from '@domain/subscription/services/subscription.
 @Component({
   selector: 'v-new-establishment',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, NzCardModule, NzStepsModule, NzButtonModule, FormStorageDirective, EstablishmentDetailsComponent, SelectPlanComponent],
+  imports: [ReactiveFormsModule, NzCardModule, NzStepsModule, FormStorageDirective, EstablishmentDetailsComponent, SelectPlanComponent],
   templateUrl: './new-establishment.page.html',
   styleUrl: './new-establishment.page.scss',
 })

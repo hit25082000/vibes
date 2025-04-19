@@ -5,7 +5,7 @@
     <nz-step></nz-step>
   </nz-steps>
 
-  <form [formGroup]="subscriptionService.esteblishmentForm" mbFormStorage="new-establishment-form">
+  <form [formGroup]="subscriptionService.esteblishmentForm" mbFormStorage="establishment-form">
     @switch (currentStep()) { @case (eSubscriptionStep.ESTABLISHMENT) {
     <v-establishment-details [(step)]="currentStep"></v-establishment-details>
     } @case (eSubscriptionStep.PLAN) {

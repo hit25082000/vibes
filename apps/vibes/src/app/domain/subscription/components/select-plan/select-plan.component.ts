@@ -48,8 +48,6 @@ export class SelectPlanComponent implements OnInit, AfterViewInit {
     const price_id = planForm.get('price_id')?.value;
 
     if (price_id) this.selectedPrice = price_id;
-
-    console.log(price_id);
   }
 
   async load() {

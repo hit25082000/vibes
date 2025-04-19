@@ -5,7 +5,6 @@ export const AUTH_ROTES: Route[] = [
   {
     path: '',
     loadComponent: () => import('./pages/login/login.page').then(m => m.LoginPage),
-    canActivate: [isLoggedInGuard],
   },
   {
     path: 'sign-up',
