@@ -8,7 +8,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 import { CurrencyPipe } from '@angular/common';
-import { AfterViewInit, Component, inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, model, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ProductsApi } from '@domain/subscription/apis/products.api';
@@ -34,12 +34,12 @@ export class SelectPlanComponent implements OnInit, AfterViewInit {
   private subscriptionService = inject(SubscriptionService);
   protected loadingService = inject(LoadingService);
 
+  step = model.required<eSubscriptionStep>();
+
   selectedPrice = '';
   products = signal<iProductWithPrice[]>([]);
 
   ngOnInit(): void {
-    this.subscriptionService.currentStep.set(eSubscriptionStep.PLAN);
-
     this.load();
   }
 
@@ -77,7 +77,11 @@ export class SelectPlanComponent implements OnInit, AfterViewInit {
     planForm.get('price_id')?.setValue(id);
   }
 
-  async submit() {
-    await this.subscriptionService.submit();
+  previousStep() {
+    this.step.set(eSubscriptionStep.ESTABLISHMENT);
+  }
+
+  nextStep() {
+    this.step.set(eSubscriptionStep.SUBMIT);
   }
 }

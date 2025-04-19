@@ -1,28 +1,21 @@
 import { Route } from '@angular/router';
+import { isLoggedInGuard } from '@core/guards/is-logged-in/is-logged-in.guard';
 
 export const SUBSCRIPTION_ROUTES: Route[] = [
   {
     path: '',
-    redirectTo: 'admin',
-    pathMatch: 'full',
-  },
-  {
-    path: '',
     title: 'Assinatura',
     loadComponent: () => import('./pages/subscription/subscription.page').then(m => m.SubscriptionPage),
-    children: [
-      {
-        path: 'admin',
-        loadComponent: () => import('./components/admin-details/admin-details.component').then(m => m.AdminDetailsComponent),
-      },
-      {
-        path: 'establishment',
-        loadComponent: () => import('./components/establishment-details/establishment-details.component').then(m => m.EstablishmentDetailsComponent),
-      },
-      {
-        path: 'select-plan',
-        loadComponent: () => import('./components/select-plan/select-plan.component').then(m => m.SelectPlanComponent),
-      },
-    ],
+  },
+  {
+    path: 'establishment',
+    title: 'Novo Estabelecimento',
+    loadComponent: () => import('./pages/new-establishment/new-establishment.page').then(m => m.NewEstablishmentPage),
+    canActivate: [isLoggedInGuard],
+  },
+  {
+    path: 'signup',
+    title: 'Registro',
+    loadComponent: () => import('./pages/signup/signup.page').then(m => m.SignupPage),
   },
 ];

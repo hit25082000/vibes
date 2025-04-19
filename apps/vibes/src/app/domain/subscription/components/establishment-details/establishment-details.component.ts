@@ -4,7 +4,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { debounceTime } from 'rxjs';
 
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, model, OnInit, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { eSubscriptionStep } from '@domain/subscription/enums/subscription-step.enum';
 import { SubscriptionService } from '@domain/subscription/services/subscription.service';
@@ -20,16 +20,14 @@ import { Establishment_FORM_CONFIG } from '@domain/subscription/constants/establ
   templateUrl: './establishment-details.component.html',
   styleUrl: './establishment-details.component.scss',
 })
-export class EstablishmentDetailsComponent implements OnInit, AfterViewInit {
+export class EstablishmentDetailsComponent implements AfterViewInit {
   private subscriptionService = inject(SubscriptionService);
+
+  step = model.required<eSubscriptionStep>();
 
   formConfig: iDynamicFormConfig[] = Establishment_FORM_CONFIG();
 
   @ViewChild(DynamicFormComponent) dynamicForm!: DynamicFormComponent;
-
-  ngOnInit(): void {
-    this.subscriptionService.currentStep.set(eSubscriptionStep.ESTABLISHMENT);
-  }
 
   ngAfterViewInit(): void {
     this.dynamicForm?.form.statusChanges.pipe(untilDestroyed(this), debounceTime(300)).subscribe(() => {
@@ -40,7 +38,11 @@ export class EstablishmentDetailsComponent implements OnInit, AfterViewInit {
     this.dynamicForm.form.patchValue(this.subscriptionService.getEstablishmentForm().getRawValue());
   }
 
-  submit() {
-    this.subscriptionService.submit();
+  previousStep() {
+    this.step.set(eSubscriptionStep.ADMIN);
+  }
+
+  nextStep() {
+    this.step.set(eSubscriptionStep.PLAN);
   }
 }

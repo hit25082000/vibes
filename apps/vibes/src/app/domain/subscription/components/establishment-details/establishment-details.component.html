@@ -5,11 +5,11 @@
 <v-dynamic-form [config]="formConfig" />
 
 <nz-flex nzGap="small" nzJustify="center">
-  <button nz-button nzType="primary" [routerLink]="['/subscription', 'admin']">
+  <button nz-button nzType="primary" (click)="previousStep()">
     <i nz-icon nzType="arrow-left"></i>
     Etapa anterior
   </button>
-  <button nz-button nzType="primary" [routerLink]="['/subscription', 'select-plan']">
+  <button nz-button nzType="primary" (click)="nextStep()">
     Próxima etapa
     <i nz-icon nzType="arrow-right"></i>
   </button>

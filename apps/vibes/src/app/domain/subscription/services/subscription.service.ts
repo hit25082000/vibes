@@ -1,15 +1,17 @@
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { inject, Injectable, signal } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Form, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@domain/auth/services/auth.service';
 
-import { eSubscriptionStep } from '../enums/subscription-step.enum';
 import { InjectSupabase } from '@shared/functions/inject-supabase.function';
 import { eUserStatus } from '@domain/auth/enums/user-status.enum';
 import { UserEstablishmentApi } from '../apis/user-establishment.api';
 import { iEstablishment } from '@shared/interfaces/establishment.interface';
+import { IUserRegistration } from '../interfaces/user-registration.interface';
+import { IEstablishmentWithPlan } from '../interfaces/establishment-with-plan.interface';
+import { eSubscriptionStep } from '../enums/subscription-step.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -20,8 +22,6 @@ export class SubscriptionService {
   private messageService = inject(NzMessageService);
   private userEstablishmentApi = inject(UserEstablishmentApi);
   private router = inject(Router);
-
-  currentStep = signal<eSubscriptionStep>(eSubscriptionStep.ADMIN);
 
   form = new FormGroup({
     admin: new FormGroup({
@@ -47,26 +47,67 @@ export class SubscriptionService {
     }),
   });
 
+  esteblishmentForm = new FormGroup({
+    admin: new FormGroup({
+      name: new FormControl<string | null>(null),
+      email: new FormControl<string | null>(null),
+      phone: new FormControl<string | null>(null),
+      password: new FormControl<string | null>(null),
+    }),
+    establishment: new FormGroup({
+      name: new FormControl<string | null>(null),
+      cnpj: new FormControl<string | null>(null),
+      zip_code: new FormControl<string | null>(null),
+      street: new FormControl<string | null>(null),
+      number: new FormControl<string | null>(null),
+      complement: new FormControl<string | null>(null),
+      neighborhood: new FormControl<string | null>(null),
+      city: new FormControl<string | null>(null),
+      state: new FormControl<string | null>(null),
+      country: new FormControl<string | null>(null),
+    }),
+    plan: new FormGroup({
+      price_id: new FormControl<string | null>(null),
+    }),
+  });
+
   getAdminForm() {
-    return this.form.get('admin') as FormGroup;
+    let form = this.form.get('admin') as FormGroup;
+
+    if (form == null) {
+      form = this.esteblishmentForm.get('admin') as FormGroup;
+    }
+
+    return form;
   }
 
   getEstablishmentForm() {
-    return this.form.get('establishment') as FormGroup;
+    let form = this.form.get('establishment') as FormGroup;
+
+    if (form == null) {
+      form = this.esteblishmentForm.get('establishment') as FormGroup;
+    }
+
+    return form;
   }
 
   getPlanForm() {
-    return this.form.get('plan') as FormGroup;
+    let form = this.form.get('plan') as FormGroup;
+
+    if (form == null) {
+      form = this.esteblishmentForm.get('plan') as FormGroup;
+    }
+
+    return form;
   }
 
-  async submit() {
+  async SendSubcription() {
     try {
       const { price_id } = this.getPlanForm().getRawValue();
       if (!price_id) throw new Error('O plano é obrigatório.');
 
       await this.createAdminUser(this.getAdminForm());
       const establishment = await this.createEstablishment(this.getEstablishmentForm());
-
       await this.createSubscription(establishment.id, price_id);
 
       this.router.navigate(['/']);
@@ -77,8 +118,24 @@ export class SubscriptionService {
     }
   }
 
-  private async createAdminUser(adminForm: FormGroup) {
-    const formValues = adminForm.getRawValue();
+  async SendNewEstablishment() {
+    try {
+      const { price_id } = (this.esteblishmentForm.get('plan') as FormGroup).getRawValue();
+      if (!price_id) throw new Error('O plano é obrigatório.');
+
+      const establishment = await this.createEstablishment(this.esteblishmentForm.get('establishment') as FormGroup);
+      await this.createSubscription(establishment.id, price_id);
+
+      this.router.navigate(['/']);
+      this.form.reset();
+    } catch (error: unknown) {
+      if (error instanceof Error) this.messageService.error(error.message);
+      else this.messageService.error('Erro ao criar assinatura' + error);
+    }
+  }
+
+  async createAdminUser(form: FormGroup<any>) {
+    const formValues = form.getRawValue();
     const { name, email, phone, password } = formValues;
 
     const payload = {
@@ -104,8 +161,8 @@ export class SubscriptionService {
     return newUser;
   }
 
-  private async createEstablishment(establishmentForm: FormGroup) {
-    const formValues = establishmentForm.getRawValue();
+  async createEstablishment(form: FormGroup<any>) {
+    const formValues = form.getRawValue();
     const { name, cnpj, zip_code, street, number, complement, neighborhood, city, state, country } = formValues;
 
     const payload = {
@@ -135,14 +192,13 @@ export class SubscriptionService {
       user_id,
     };
 
-    console.log(userEstablishmentPayload);
     const { error: userEstablishmentError } = await this.userEstablishmentApi.insert(userEstablishmentPayload);
     if (userEstablishmentError) throw new Error('Erro ao vincular usuário a empresa' + userEstablishmentError);
 
     return establishment;
   }
 
-  private async createSubscription(establishment_id: string, price_id: string) {
+  async createSubscription(establishment_id: string, price_id: string) {
     const user = this.authService.currentUser();
     if (!user) throw new Error('Usuário não encontrado');
 

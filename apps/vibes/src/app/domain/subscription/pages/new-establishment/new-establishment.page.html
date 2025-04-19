@@ -5,10 +5,8 @@
     <nz-step></nz-step>
   </nz-steps>
 
-  <form [formGroup]="subscriptionService.form" mbFormStorage="subscription-form">
-    @switch (currentStep()) { @case (eSubscriptionStep.ADMIN) {
-    <v-admin-details [(step)]="currentStep"></v-admin-details>
-    } @case (eSubscriptionStep.ESTABLISHMENT) {
+  <form [formGroup]="subscriptionService.esteblishmentForm" mbFormStorage="new-establishment-form">
+    @switch (currentStep()) { @case (eSubscriptionStep.ESTABLISHMENT) {
     <v-establishment-details [(step)]="currentStep"></v-establishment-details>
     } @case (eSubscriptionStep.PLAN) {
     <v-select-plan [(step)]="currentStep"></v-select-plan>

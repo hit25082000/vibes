@@ -5,7 +5,7 @@
 <v-dynamic-form [config]="formConfig" />
 
 <nz-flex nzGap="small" nzJustify="center">
-  <button nz-button nzType="primary" [routerLink]="['/subscription', 'establishment']">
+  <button nz-button nzType="primary" (click)="nextStep()">
     Próxima etapa
     <i nz-icon nzType="arrow-right"></i>
   </button>

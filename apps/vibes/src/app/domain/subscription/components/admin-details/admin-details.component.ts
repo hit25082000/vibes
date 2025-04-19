@@ -4,7 +4,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { debounceTime } from 'rxjs';
 
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, model, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { eSubscriptionStep } from '@domain/subscription/enums/subscription-step.enum';
@@ -21,8 +21,10 @@ import { DynamicFormComponent } from '@widget/components/dynamic-form/dynamic-fo
   templateUrl: './admin-details.component.html',
   styleUrl: './admin-details.component.scss',
 })
-export class AdminDetailsComponent implements AfterViewInit, OnInit {
+export class AdminDetailsComponent implements AfterViewInit {
   private subscriptionService = inject(SubscriptionService);
+
+  step = model.required<eSubscriptionStep>();
 
   formConfig: iDynamicFormConfig[] = [
     {
@@ -68,10 +70,6 @@ export class AdminDetailsComponent implements AfterViewInit, OnInit {
 
   @ViewChild(DynamicFormComponent) dynamicForm!: DynamicFormComponent;
 
-  ngOnInit(): void {
-    this.subscriptionService.currentStep.set(eSubscriptionStep.ADMIN);
-  }
-
   ngAfterViewInit(): void {
     this.dynamicForm?.form.valueChanges.pipe(untilDestroyed(this), debounceTime(300)).subscribe(value => {
       const form = this.subscriptionService.getAdminForm();
@@ -79,5 +77,9 @@ export class AdminDetailsComponent implements AfterViewInit, OnInit {
     });
 
     this.dynamicForm.form.patchValue(this.subscriptionService.getAdminForm().value);
+  }
+
+  nextStep() {
+    this.step.set(eSubscriptionStep.ESTABLISHMENT);
   }
 }

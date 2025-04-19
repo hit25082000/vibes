@@ -48,4 +48,9 @@ export class AuthService {
     if (error) throw error;
     this.currentUser.set(user as iUser);
   }
+
+  async logout() {
+    const { error } = await this.supabase.auth.signOut();
+    if (error) throw error;
+  }
 }
